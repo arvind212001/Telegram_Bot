@@ -4,7 +4,7 @@ from pytgcalls.types.input_stream import AudioPiped
 from pytgcalls.types.input_stream.quality import HighQualityAudio
 import yt_dlp
 
-API_ID = 123456
+API_ID = 30672858
 API_HASH = "your_api_hash"
 BOT_TOKEN = "8297448324:AAGsQJPL6UluNTNFP5xwKUmTvlL_BxvCVyA"
 
@@ -43,4 +43,5 @@ app.start()
 call_py.start()
 import idle
 idle()
+
 
