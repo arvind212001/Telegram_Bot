@@ -5,7 +5,7 @@ from pytgcalls.types.input_stream.quality import HighQualityAudio
 import yt_dlp
 
 API_ID = 30672858
-API_HASH = "your_api_hash"
+API_HASH = "d14a1569149738de4c08f20d6233fa5f"
 BOT_TOKEN = "8297448324:AAGsQJPL6UluNTNFP5xwKUmTvlL_BxvCVyA"
 
 app = Client("vc_music_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
@@ -43,5 +43,6 @@ app.start()
 call_py.start()
 import idle
 idle()
+
 
 
