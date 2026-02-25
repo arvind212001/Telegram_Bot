@@ -1,46 +1,45 @@
-import os
+from pyrogram import Client, filters
+from pytgcalls import PyTgCalls
+from pytgcalls.types.input_stream import AudioPiped
+from pytgcalls.types.input_stream.quality import HighQualityAudio
 import yt_dlp
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
-BOT_TOKEN = "8297448324:AAGsQJPL6UluNTNFP5xwKUmTvlL_BxvCVyA"
+API_ID = 123456
+API_HASH = "your_api_hash"
+BOT_TOKEN = "your_bot_token"
 
-# Start command
-async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🎵 Send me a song name and I will play it for you!")
+app = Client("vc_music_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+call_py = PyTgCalls(app)
 
-# Handle song search
-async def download_song(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    song_name = update.message.text
-    await update.message.reply_text(f"🔎 Searching for: {song_name}")
-
+def get_audio(query):
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': 'song.%(ext)s',
-        'noplaylist': True,
-        'quiet': True
+        "format": "bestaudio",
+        "noplaylist": True,
+        "quiet": True
     }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info = ydl.extract_info(f"ytsearch:{query}", download=False)
+        return info['entries'][0]['url']
 
-    try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            info = ydl.extract_info(f"ytsearch:{song_name}", download=True)
-            video = info['entries'][0]
-            file_name = ydl.prepare_filename(video)
+@app.on_message(filters.command("play"))
+async def play(_, message):
+    chat_id = message.chat.id
+    query = " ".join(message.command[1:])
+    await message.reply("🔎 Searching...")
 
-        await update.message.reply_audio(audio=open(file_name, 'rb'))
+    audio_url = get_audio(query)
 
-        os.remove(file_name)
+    await call_py.join_group_call(
+        chat_id,
+        AudioPiped(
+            audio_url,
+            HighQualityAudio(),
+        ),
+    )
 
-    except Exception as e:
-        await update.message.reply_text("❌ Error downloading song.")
-        print(e)
+    await message.reply("🎶 Playing now in VC!")
 
-# Main function
-if __name__ == "__main__":
-    app = ApplicationBuilder().token(BOT_TOKEN).build()
-
-    app.add_handler(CommandHandler("start", start))
-    app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_song))
-
-    print("🤖 Bot is running...")
-    app.run_polling()
+app.start()
+call_py.start()
+import idle
+idle()
