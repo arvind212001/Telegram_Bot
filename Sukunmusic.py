@@ -6,7 +6,7 @@ import yt_dlp
 
 API_ID = 123456
 API_HASH = "your_api_hash"
-BOT_TOKEN = "your_bot_token"
+BOT_TOKEN = "8297448324:AAGsQJPL6UluNTNFP5xwKUmTvlL_BxvCVyA"
 
 app = Client("vc_music_bot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 call_py = PyTgCalls(app)
@@ -43,3 +43,4 @@ app.start()
 call_py.start()
 import idle
 idle()
+
